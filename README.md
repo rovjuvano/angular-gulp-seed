@@ -63,6 +63,7 @@ serve pages (e.g. using HTTP server from Python)
 	paths.jade - file pattern of source jade files
 	paths.less - file pattern of source less files
 	paths.raw - file pattern of source files that need no processing
+	paths.test - file pattern of unit tests
 
 # Known Issues
 
@@ -72,6 +73,6 @@ serve pages (e.g. using HTTP server from Python)
 
 * also build concatenated/minified version
 * prime angular's $templateCache
-* add test runner (mocha and karma are simple to setup and use in the meantime)
+* add end-to-end test runner
 * add express
 * add source file linting
