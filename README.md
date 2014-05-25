@@ -10,7 +10,7 @@ install bower dependencies
 
 # Development
 
-build and rebuild when source files change
+build and re-build when source files change
 
 	./node_modules/.bin/gulp
 
@@ -22,11 +22,13 @@ serve pages (e.g. using HTTP server from Python)
 
 # Directory Structure
 
-	src - source files
-	src/**/*.jade - jade files converted to HTML
-	src/**/*.less - less files converted to CSS
-	src/**/*.js - js files copied as is
-	dist - destination directory
+	src/ - source files
+	src/**/*.jade - jade files to convert to HTML
+	src/**/*.less - less files to convert to CSS
+	src/**/*.js - js files to copy as is
+	dist/ - destination directory
+	spec/ - test files
+	spec/lib/ - test helper files
 
 # Common Changes
 
@@ -34,9 +36,9 @@ serve pages (e.g. using HTTP server from Python)
 
  add via bower
 
-	bower install acmejs
+	bower install --save acmejs
 
- edit Gulpfile.js and add source path to paths.raw
+ edit `config/gulp.js` and add source path to `paths.raw`
 
 	var paths = {
 		...,
@@ -50,29 +52,27 @@ serve pages (e.g. using HTTP server from Python)
 
 ## Gulp tasks
 
-	default - build, watch
+	default - build, test, watch
 	clean - clean build directory of generated files
 	build - compile/transpile/copy sources files
 	build:jade - convert jade source files into HTML
 	build:css - convert less source files into CSS
 	build:raw - copy files unaltered (e.g. JavaScript, vendor files)
-	watch - rebuild sources as needed
+	test - run test suite once
+	watch - re-build and re-test as needed
 
 ## Gulp file paths
 
+	paths.dist_dir - path to store built files
 	paths.jade - file pattern of source jade files
 	paths.less - file pattern of source less files
 	paths.raw - file pattern of source files that need no processing
-	paths.test - file pattern of unit tests
-
-# Known Issues
-
-* new files are not detected by watch. This is a limitation of watch.
+	paths.test.karma_config - path to karma config file
+	paths.test.watch - file pattern of unit test dependencies
 
 # TODOS
 
 * also build concatenated/minified version
 * prime angular's $templateCache
 * add end-to-end test runner
-* add express
 * add source file linting
