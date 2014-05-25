@@ -4,9 +4,9 @@ module.exports = {
 		'bower_components/angular-mocks/angular-mocks.js',
 		'dist/**/*.js',
 		'spec/lib/**/*.js',
-		'spec/**/*{[-_]s,S}pec.js'
+		'spec/**/*{[-_]s,S}pec.{js,coffee}'
 	],
-	frameworks: ['jasmine'],
+	frameworks: ['jasmine-given', 'jasmine'],
 	browsers: [
 		'PhantomJS',
 	],
@@ -16,8 +16,12 @@ module.exports = {
 	autoWatch: false,
 	plugins: [
 		'karma-jasmine',
+		'karma-jasmine-given',
 		'karma-phantomjs-launcher',
 		'karma-coffee-preprocessor',
 	],
+	preprocessors: {
+		'**/*.coffee': ['coffee'],
+	},
 	// logLevel: config.LOG_INFO,
 };
