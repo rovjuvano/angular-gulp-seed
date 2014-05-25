@@ -1,29 +1,16 @@
 var gulp = require('gulp'),
+	gulpConfig = require('./config/gulp.js'),
 	clean = require('gulp-clean'),
 	cached = require('gulp-cached'),
 	jadeToHtml = require('gulp-jade'),
 	lessToCss = require('gulp-less'),
 	cssAutoprefixer = require('gulp-autoprefixer'),
 	karma = require('karma').server,
+	karmaConfig = require(gulpConfig.paths.test.karma_config),
 	pkg = require('./package.json');
 
-const DIST_DIR = 'dist';
-
-var paths = {
-	jade: ['src/**/*.jade'],
-	less: ['src/**/*.less'],
-	raw: ['src/**/*.js',
-		'bower_components/angular/angular.min.js{,.map}',
-	],
-	test: {
-		run: [
-			'dist/angular.min.js',
-			'dist/**/*.js',
-			'spec/**/*{[-_]s,S}pec.js'
-		],
-		watch: ['spec/**/*', DIST_DIR + '**/*'],
-	},
-}
+var DIST_DIR = gulpConfig.dist_dir;
+var paths = gulpConfig.paths;
 
 gulp.task('default', ['watch']);
 gulp.task('clean', function() {
@@ -56,26 +43,16 @@ gulp.task('watch', ['test'], function() {
 	gulp.watch(paths.less, ['build:less']);
 	gulp.watch(paths.raw, ['build:raw']);
 	gulp.watch(paths.test.watch, ['test:unit']);
+	gulp.watch(paths.test.karma_config, function(event) {
+		delete require.cache[require.resolve(paths.test.karma_config)];
+		karmaConfig = require(paths.test.karma_config);
+		return gulp.start('test:unit');
+	});
 });
 
 gulp.task('test', ['build'], function() { return gulp.start('test:unit') });
 gulp.task('test:unit', function(cb) {
-	karma.start({
-		files: [
-			'dist/angular.min.js',
-			'bower_components/angular-mocks/angular-mocks.js',
-			'dist/**/*.js',
-			'spec/**/*{[-_]s,S}pec.js'
-		],
-		frameworks: ['jasmine'],
-		browsers: ['PhantomJS'],
-		reporters: [ 'progress' ],
-		port: 9876,
-		singleRun: true,
-		autoWatch: false,
-		plugins: [ 'karma-jasmine', 'karma-phantomjs-launcher' ],
-		// logLevel: config.LOG_INFO,
-	}, function (exitCode) {
+	karma.start(karmaConfig, function (exitCode) {
 		cb();
 	});
 });
