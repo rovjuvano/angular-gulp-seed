@@ -4,7 +4,7 @@ var gulp = require('gulp'),
 	jadeToHtml = require('gulp-jade'),
 	lessToCss = require('gulp-less'),
 	cssAutoprefixer = require('gulp-autoprefixer'),
-	mocha = require('gulp-mocha'),
+	karma = require('karma').server,
 	pkg = require('./package.json');
 
 const DIST_DIR = 'dist';
@@ -16,7 +16,11 @@ var paths = {
 		'bower_components/angular/angular.min.js{,.map}',
 	],
 	test: {
-		run: 'spec/**/*{[-_]s,S}pec.js',
+		run: [
+			'dist/angular.min.js',
+			'dist/**/*.js',
+			'spec/**/*{[-_]s,S}pec.js'
+		],
 		watch: ['spec/**/*', DIST_DIR + '**/*'],
 	},
 }
@@ -55,7 +59,23 @@ gulp.task('watch', ['test'], function() {
 });
 
 gulp.task('test', ['build'], function() { return gulp.start('test:unit') });
-gulp.task('test:unit', function() {
-	return gulp.src(paths.test.run, { read: false })
-		.pipe(mocha({ reporter: 'min' }));
+gulp.task('test:unit', function(cb) {
+	karma.start({
+		files: [
+			'dist/angular.min.js',
+			'bower_components/angular-mocks/angular-mocks.js',
+			'dist/**/*.js',
+			'spec/**/*{[-_]s,S}pec.js'
+		],
+		frameworks: ['jasmine'],
+		browsers: ['PhantomJS'],
+		reporters: [ 'progress' ],
+		port: 9876,
+		singleRun: true,
+		autoWatch: false,
+		plugins: [ 'karma-jasmine', 'karma-phantomjs-launcher' ],
+		// logLevel: config.LOG_INFO,
+	}, function (exitCode) {
+		cb();
+	});
 });

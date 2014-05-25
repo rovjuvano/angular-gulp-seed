@@ -1,7 +1,8 @@
-require('./spec_helper');
-
-describe('Test', function() {
-	it('passes', function() {
-		true.should.eql(true);
-	})
-})
+describe('App', function() {
+	beforeEach(function() {
+		module('app');
+	});
+	it('exists', function() {
+		expect(angular.module('app')).toBeDefined();
+	});
+});
